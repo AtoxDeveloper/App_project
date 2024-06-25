@@ -1,0 +1,15 @@
+# Ignore node_modules in the root of the project
+node_modules/
+
+# Ignore node_modules in any subdirectory of the project
+**/node_modules/
+
+# Example: Ignore build outputs
+/build/
+/dist/
+
+# Example: Ignore environment variables file
+.env
+
+# Example: Ignore Visual Studio Code specific files
+.vscode/
