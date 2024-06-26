@@ -15,7 +15,6 @@ RUN echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ".npmrc" && \
     rm -f .npmrc
 
 COPY tsconfig*.json .
-COPY .swcrc .
 COPY nest-cli.json .
 COPY src src
 
@@ -35,7 +34,6 @@ RUN echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ".npmrc" && \
     rm -f .npmrc
 
 COPY tsconfig*.json .
-COPY .swcrc .
 COPY nest-cli.json .
 COPY src src
 
