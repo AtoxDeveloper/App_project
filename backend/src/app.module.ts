@@ -2,7 +2,8 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { LoggerModule } from "./shared/logger/logger.module";
-import { AuthController } from './auth/auth.controller';
+import { AuthModule } from "./auth/auth.module";
+import { ParticipantModule } from "./participant/module/participant.module";
 
 @Module({
   imports: [
@@ -26,8 +27,8 @@ import { AuthController } from './auth/auth.controller';
       inject: [ConfigService],
     }),
     LoggerModule,
-  ],
-  controllers: [AuthController],
-  providers: [],
+    AuthModule,
+    ParticipantModule
+  ]
 })
 export class AppModule {}

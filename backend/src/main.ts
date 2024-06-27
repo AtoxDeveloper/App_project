@@ -7,6 +7,7 @@ import {
 } from "@nestjs/platform-fastify";
 
 import { AppModule } from "./app.module";
+import { useContainer } from "class-validator";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -16,7 +17,18 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get<string>("PORT", "3000");
-  app.useGlobalPipes(new ValidationPipe())
+
+  app.setGlobalPrefix('api/v1');
+
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true, // Habilitar la transformación automática
+    whitelist: true, // Eliminar propiedades no declaradas en el DTO
+    forbidNonWhitelisted: true, // Lanzar error si hay propiedades no declaradas
+  }));
+
+  // Configuración del contenedor de class-validator
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
   await app.listen(port, "0.0.0.0");
 
   const logger = app.get(Logger);
