@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: task-management-api-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: task-management-api
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+    networks:
+      - my_network
+
+  backend:
+    container_name: backend
+    restart: unless-stopped
+    env_file: .env
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: dev
+      args:
+        - PORT=3000
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - my_network
+    depends_on:
+      - postgres
+
+  frontend:
+    container_name: frontend
+    restart: unless-stopped
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+    tty: true
+    networks:
+      - my_network    
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.1
+    container_name: keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    networks:
+      - my_network
+
+volumes:
+  node_modules:
+
+networks:
+  my_network:
+    driver: bridge

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './login.module.css';
-import { UserService } from '../services/user.services';
+import { UserService } from '../../services/user.services';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -26,8 +26,8 @@ return (
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div>
-          <label>Email:</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <label>Email or Username:</label>
+          <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
         <div>
           <label>Password:</label>

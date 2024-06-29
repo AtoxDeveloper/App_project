@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import LoginView from './views/login.view';
+import SplashView from './views/splash.view';
 
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginView />} />
+        <Route path="/" element={<SplashView />} />
       </Routes>
     </Router>
   );
