@@ -1,14 +1,16 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from './auth.guard';
+import { KeycloakService } from '@src/keycloak/services/keycloak.service';
 
 @Controller('auth')
 export class AuthController {
 
     constructor(
-        private readonly authService: AuthService
+        private readonly authService: AuthService,
+        private readonly keycloakService: KeycloakService
     ) {}
 
     @Post('register')
@@ -21,9 +23,20 @@ export class AuthController {
         return this.authService.login(loginDto);
     }
 
-    @Get('profile')
+    @Post('/active')
+    async introspectToken(@Body() body: { token: string }) {
+      try {
+        const { token } = body;
+        const activeUser = await this.keycloakService.getActiveUser(token);
+        return { active: activeUser.active }; 
+      } catch (error) {
+        throw new UnauthorizedException('Invalid token');
+      }
+    }
+
     @UseGuards(AuthGuard)
-    profile() {
-        return 'profile';
+    @Get('verify')
+    verify() {
+        return { valid: true };
     }
 }

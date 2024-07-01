@@ -18,17 +18,27 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get<string>("PORT", "3000");
 
+  // Configuración de CORS
+  app.enableCors({
+    origin: '*', // Especifíca el origen de tu frontend aquí en producción
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
+
+  // Establecer el prefijo global para la API
   app.setGlobalPrefix('api/v1');
 
+  // Utilizar ValidationPipe global para la validación de DTOs
   app.useGlobalPipes(new ValidationPipe({
-    transform: true, // Habilitar la transformación automática
-    whitelist: true, // Eliminar propiedades no declaradas en el DTO
-    forbidNonWhitelisted: true, // Lanzar error si hay propiedades no declaradas
+    transform: true, // Habilita la transformación automática
+    whitelist: true, // Elimina propiedades no declaradas en el DTO
+    forbidNonWhitelisted: true, // Lanza un error si hay propiedades no declaradas
   }));
 
-  // Configuración del contenedor de class-validator
+  // Configurar el contenedor de class-validator
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
+  // Escuchar en el puerto especificado
   await app.listen(port, "0.0.0.0");
 
   const logger = app.get(Logger);
@@ -38,9 +48,7 @@ async function bootstrap() {
 bootstrap().catch(handleError);
 
 function handleError(error: unknown) {
-  // eslint-disable-next-line no-console
   console.error(error);
-  // eslint-disable-next-line unicorn/no-process-exit
   process.exit(1);
 }
 

@@ -1,20 +1,52 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export class UserService {
-
-    static async login(email: string, password: string) {
-        //const response = await axios.post(`${API_BASE_URL}/login`, { email, password });
-        const data = {
-            userId: email,
-            pass: password
-        }
-        return data;
-    }
-      
-    static async getUserById(userId: string) {
-        const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
-        return response.data;
+export const login = async (email: string, password: string) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/v1/auth/login`, { email, password });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        console.error('Login failed SERVICES:', axiosError.response.data);
+        throw axiosError.response.data; 
+      } else {
+        console.error('Network Error:', axiosError.message);
+        throw new Error('Network Error. Please try again later.');
+      }
+    } else if (error instanceof Error) {
+      console.error('Unknown Error:', error.message);
+      throw new Error('Unknown Error. Please try again later.');
+    } else {
+      console.error('Unexpected Error:', error);
+      throw new Error('An unexpected error occurred. Please try again later.');
     }
   }
+};
+
+export const loginWithKeycloak = async (username: string, password: string) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/v1/keycloak/token`, { username, password });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        console.error('Login with Keycloak failed:', axiosError.response.data);
+        throw axiosError.response.data; 
+      } else {
+        console.error('Network Error:', axiosError.message);
+        throw new Error('Network Error. Please try again later.');
+      }
+    } else if (error instanceof Error) {
+      console.error('Unknown Error:', error.message);
+      throw new Error('Unknown Error. Please try again later.');
+    } else {
+      console.error('Unexpected Error:', error);
+      throw new Error('An unexpected error occurred. Please try again later.');
+    }
+  }
+};

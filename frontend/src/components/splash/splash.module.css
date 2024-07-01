@@ -1,12 +1,27 @@
-/*INTRO SCREEN*/
+.preload{
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(144deg, #0047FF -0.78%, #002B99 99.4%);
+  color: #fff;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 55;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
 
-.intro{
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: #1E8F0D;
-    transition: 1s;
-  }
+.preload .textContainer{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  width: 50%;
+  font-size: 40px;
+  font-weight: 800;
+  overflow: hidden;
+  color:#fff;
+}

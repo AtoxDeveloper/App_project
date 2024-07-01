@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { LoggerModule } from "./shared/logger/logger.module";
 import { AuthModule } from "./auth/auth.module";
 import { ParticipantModule } from "./participant/module/participant.module";
+import { KeycloakModule } from './keycloak/module/keycloak.module';
 
 @Module({
   imports: [
@@ -15,20 +16,21 @@ import { ParticipantModule } from "./participant/module/participant.module";
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get<string>('DB_HOST'),
-        port:  configService.get<number>('DB_PORT'),
+        port: configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [__dirname + '/db/entities/*.entity{.ts,.js}'],
         synchronize: configService.get<boolean>('DB_SYNC'),
         retryDelay: 3000,
-        retryAttempts: 5
+        retryAttempts: 5,
       }),
       inject: [ConfigService],
     }),
     LoggerModule,
     AuthModule,
-    ParticipantModule
+    ParticipantModule,
+    KeycloakModule
   ]
 })
 export class AppModule {}
